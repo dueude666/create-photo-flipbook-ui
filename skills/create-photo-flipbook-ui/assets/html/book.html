@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>相册 · 时光书柜</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=20261009">
+</head>
+<body>
+  <main class="room">
+    <header class="book-header">
+      <a class="back-link" href="library.html">← 我的书柜</a>
+      <div class="book-heading"><h1 id="book-title">正在打开相册…</h1><p id="book-meta"></p></div>
+      <span id="orientation">翻页阅读</span>
+    </header>
+    <section class="stage" aria-label="互动相册">
+      <div class="book-rig"><div id="book" class="book" data-page-width="512" data-page-height="640"></div></div>
+      <p id="reader-error" class="reader-error" role="alert" hidden></p>
+    </section>
+    <footer class="reader-footer">
+      <nav class="controls" aria-label="相册控制">
+        <button id="previous" class="page-arrow" type="button" aria-label="上一页" disabled>←</button>
+        <div class="status"><span id="page-status" aria-live="polite">准备中</span><small>拖动书页或使用左右方向键</small></div>
+        <button id="next" class="page-arrow" type="button" aria-label="下一页" disabled>→</button>
+      </nav>
+      <button id="edit-page" class="edit-page" type="button" disabled>编辑书页文字</button>
+      <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+    </footer>
+  </main>
+  <dialog id="edit-dialog" aria-labelledby="edit-title">
+    <form id="edit-form">
+      <div class="dialog-heading"><div><span class="eyebrow">把回忆写下来</span><h2 id="edit-title">编辑书页文字</h2></div><button type="button" class="icon-button" id="cancel-edit" aria-label="关闭编辑">×</button></div>
+      <label for="edit-page-select">选择书页</label>
+      <select id="edit-page-select"></select>
+      <p class="hint">每一页都可以单独修改。封面标题也会同步到书柜。</p>
+      <div id="edit-fields"></div>
+      <p id="edit-error" class="error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="secondary" id="cancel-edit-bottom">取消</button><button id="save-text" type="submit" class="primary">保存文字</button></div>
+    </form>
+  </dialog>
+  <script src="vendor/page-flip.browser.js"></script>
+  <script type="module" src="book.mjs?v=20261009"></script>
+</body>
+</html>

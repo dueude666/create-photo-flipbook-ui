@@ -110,8 +110,15 @@ def main() -> None:
         check=True,
     )
     subprocess.run(
-        ["python3", "-m", "unittest", str(ROOT / "tests" / "test_contact_sheet.py"),
-         str(ROOT / "tests" / "test_photo_library.py")],
+        ["node", "--test", str(SKILL / "assets" / "html" / "library-model.test.mjs")],
+        check=True,
+    )
+    subprocess.run(
+        ["python3", str(ROOT / "tests" / "test_contact_sheet.py")],
+        check=True,
+    )
+    subprocess.run(
+        ["python3", str(ROOT / "tests" / "test_photo_library.py")],
         check=True,
     )
     subprocess.run(

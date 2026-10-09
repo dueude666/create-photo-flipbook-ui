@@ -4,18 +4,32 @@ import test from "node:test";
 
 const root = new URL("./", import.meta.url);
 const index = await readFile(new URL("index.html", root), "utf8");
+const library = await readFile(new URL("library.html", root), "utf8");
+const book = await readFile(new URL("book.html", root), "utf8");
 const script = await readFile(new URL("flipbook.js", root), "utf8");
+const bookScript = await readFile(new URL("book.mjs", root), "utf8");
 const styles = await readFile(new URL("styles.css", root), "utf8");
-const pages = [...index.matchAll(/<article\b[^>]*class="[^"]*\bbook-page\b[^"]*"[^>]*>/g)].map(
-  ([tag]) => tag,
-);
 
-test("template is vanilla HTML", () => {
-  assert.doesNotMatch(`${index}\n${script}\n${styles}`, /react|jsx|vite/i);
-  assert.match(index, /id="book"/);
-  assert.match(index, /data-page-width="\d+"/);
-  assert.match(index, /data-page-height="\d+"/);
-  assert.match(index, /vendor\/page-flip\.browser\.js/);
+test("template includes a persistent bookshelf", () => {
+  assert.doesNotMatch(`${index}\n${library}\n${book}\n${bookScript}\n${styles}`, /react|jsx|vite/i);
+  assert.match(index, /id="shelf"/);
+  assert.match(index, /id="create-book"/);
+  assert.match(index, /id="delete-dialog"/);
+  assert.match(index, /id="book-search"/);
+  assert.match(index, /id="export-books"/);
+  assert.match(index, /id="import-books"/);
+  assert.match(library, /library\.mjs/);
+  assert.match(book, /book\.mjs/);
+  assert.match(bookScript, /savePages/);
+  assert.match(bookScript, /edit-page/);
+  assert.match(bookScript, /formatDate/);
+});
+
+test("book reader retains the page-flip contract", () => {
+  assert.match(book, /id="book"/);
+  assert.match(book, /data-page-width="\d+"/);
+  assert.match(book, /data-page-height="\d+"/);
+  assert.match(book, /vendor\/page-flip\.browser\.js/);
   assert.match(script, /new St\.PageFlip/);
   assert.match(script, /loadFromHTML\(pages\)/);
   assert.match(script, /bookElement\.dataset\.pageWidth/);
@@ -28,16 +42,9 @@ test("template is vanilla HTML", () => {
   assert.doesNotMatch(styles, /book-gutter|data-orientation="landscape"/);
 });
 
-test("cover and page density contract is valid", () => {
-  assert.ok(pages.length >= 2);
-  assert.match(pages[0], /data-density="hard"/);
-  assert.match(pages.at(-1), /data-density="hard"/);
-  for (const page of pages.slice(1, -1)) assert.doesNotMatch(page, /data-density="hard"/);
-});
-
 test("default page size stays inside the UI envelope", () => {
-  const width = Number(index.match(/data-page-width="(\d+)"/)?.[1]);
-  const height = Number(index.match(/data-page-height="(\d+)"/)?.[1]);
+  const width = Number(book.match(/data-page-width="(\d+)"/)?.[1]);
+  const height = Number(book.match(/data-page-height="(\d+)"/)?.[1]);
   assert.ok(Math.max(width, height) <= 640);
 });
 
